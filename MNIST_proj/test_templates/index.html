@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MNIST Digit Recognizer</title>
+<link rel="stylesheet" href="/static/test_style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>MNIST Digit Recognizer</h1>
+
+<!-- IMAGE PREDICTION -->
+<div class="card">
+<h2>Predict a Digit</h2>
+
+<form action="/predict-image/" method="post" enctype="multipart/form-data">
+<input type="file" name="file" accept="image/*" required>
+<button type="submit">Predict Digit</button>
+</form>
+
+{% if result is not none %}
+<div class="result">
+<p><strong>Prediction:</strong> {{ result }}</p>
+<p><strong>Confidence:</strong> {{ prob }}%</p>
+
+<img src="data:image/png;base64,{{ image }}" class="preview">
+
+<br><br>
+
+<a href="/" class="back-btn">Try Another Image</a>
+
+</div>
+{% endif %}
+
+
+</div>
+
+
+<!-- MODEL RETRAINING -->
+<div class="card">
+<h2>Retrain Model</h2>
+
+<form action="/retrain_upload_file" method="post" enctype="multipart/form-data">
+<input type="file" name="file" accept=".zip" required>
+<button type="submit">Upload Dataset & Retrain</button>
+</form>
+
+{% if message %}
+<div class="result">
+<p>{{ message }}</p>
+</div>
+{% endif %}
+
+</div>
+
+</div>
+
+</body>
+</html>

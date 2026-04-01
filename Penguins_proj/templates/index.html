@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Penguins Prediction</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🐧 Penguins Species Predictor</h1>
+        <p>Enter the measurements below to predict the species. Values should be positive.</p>
+
+        <form action="/predict" method="post" class="prediction-form">
+            <label for="bill_length_mm">Bill Length (mm):</label>
+            <input type="number" step="0.1" name="bill_length_mm" id="bill_length_mm" required>
+
+            <label for="flipper_length_mm">Flipper Length (mm):</label>
+            <input type="number" step="0.1" name="flipper_length_mm" id="flipper_length_mm" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if result %}
+            <div class="result-box">
+                <h2>Prediction Result</h2>
+                {% if param %}
+                    <p><strong>Bill Length:</strong> {{ param.bill_length_mm }} mm</p>
+                    <p><strong>Flipper Length:</strong> {{ param.flipper_length_mm }} mm</p>
+                {% endif %}
+                <p class="species">Predicted Species: <span>{{ result }}</span></p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
