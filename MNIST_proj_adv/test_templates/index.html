@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MNIST Digit Recognizer</title>
+<link rel="stylesheet" href="/static/test_style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>MNIST Digit Recognizer</h1>
+
+<!-- IMAGE PREDICTION -->
+<div class="card">
+<h2>Predict a Digit</h2>
+
+<form id="retrainForm" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".zip" required>
+    <button type="submit">Upload Dataset & Retrain</button>
+</form>
+
+{% if result is not none %}
+<div class="result">
+<p><strong>Prediction:</strong> {{ result }}</p>
+<p><strong>Confidence:</strong> {{ prob }}%</p>
+
+<img src="data:image/png;base64,{{ image }}" class="preview">
+
+<br><br>
+
+<a href="/" class="back-btn">Try Another Image</a>
+
+</div>
+{% endif %}
+
+
+</div>
+
+
+<!-- Retrain Model Section -->
+<section class="card">
+    <h2>Retrain Model</h2>
+    <p>Upload a ZIP file containing PNG images and a labels TXT file to retrain the model.</p>
+
+    <form id="retrainForm"
+          action="/retrain_upload_file"
+          method="post"
+          enctype="multipart/form-data"
+          onsubmit="showTraining()">
+
+        <input type="file" name="file" accept=".zip" required>
+        <button type="submit" class="btn-secondary">Upload Dataset & Retrain</button>
+    </form>
+
+    <!-- Training status box (hidden initially) -->
+    <div id="trainingBox" class="training-box" style="display:none;">
+        <p id="statusText">Training status: starting...</p>
+
+        <div class="progress-bar">
+            <div id="progressFill"></div>
+        </div>
+    </div>
+    </section>
+
+
+
+</div>
+
+</div>
+
+<script>
+document.getElementById("retrainForm").addEventListener("submit", async function(e){
+    e.preventDefault();   // stop page refresh
+
+    const formData = new FormData(this);
+
+    document.getElementById("trainingBox").style.display = "block";
+
+    await fetch("/retrain_upload_file", {
+        method: "POST",
+        body: formData
+    });
+});
+
+async function checkTraining(){
+
+    const res = await fetch("/training-status");
+    const data = await res.json();
+
+    document.getElementById("statusText").innerText =
+        "Training status: " + data.message;
+
+    document.getElementById("progressFill").style.width =
+        data.progress + "%";
+}
+
+setInterval(checkTraining, 2000);
+</script>
+
+
+
+</body>
+</html>
